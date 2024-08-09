@@ -6,14 +6,18 @@ export class Level extends Container {
 	playerSpawnpoint = [0, 0];
 	constructor() {
 		super();
+		this.addChild(this.player);
 	}
 	update() {
 		for (const child of this.children) {
 			child.update();
 			child.x += child.velocity[0];
 			child.y += child.velocity[1];
-			child.velocity[0] /= 2;
-			child.velocity[1] /= 2;
+			child.velocity[0] = child.acceleration[0];
+			child.velocity[1] = child.acceleration[1];
+			child.acceleration[1] = (5 - child.acceleration[1]) * .8;// gravity
+			child.velocity[0] *= 0.99; // friction
+			child.velocity[1] *= 0.99;
 			child.updateDisplay();
 		}
 	}
@@ -34,16 +38,19 @@ export class LevelManager extends Container {
 		this.currentLevel = new this.levels[this.currentLevelIndex]();
 		this.currentLevel._setup();
 		this.player = this.currentLevel.player;
+		this.addChild(this.currentLevel);
 		this.ticker.add(() => {
 			this.currentLevel.update();
 		}, this);
-		console.log(this.player)
+		this.ticker.start()
 	}
 	nextLevel() {
+		this.removeChild(this.currentLevel);
 		this.currentLevelIndex += 1;
 		this.currentLevel = new this.levels[this.currentLevelIndex]();
 		this.player = this.currentLevel.player;
 		this.currentLevel._setup();
+		this.addChild(this.currentLevel);
 	}
 	toggleDebugMode() {}
 }

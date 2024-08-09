@@ -1,19 +1,33 @@
 import { DynamicEntity } from "./entity.js";
-import { checkKey } from "https://cdn.jsdelivr.net/npm/@rwh/keystrokes@1.5.6/+esm"
-import { Sprite, Assets } from "/deps/pixi.mjs";
-
+import { Sprite, Assets, Rectangle } from "/deps/pixi.mjs";
+import Keyboard from "../keyboard.js";
 const playerTexture = await Assets.load("player");
 export default class Player extends DynamicEntity {
 	display = new Sprite(playerTexture);
+	canJump = true;
+	jumpIsAscending = false;
+	jumpHeight = 10;
+	speed = 3;
 	constructor() {
-		super("player");
+		super("player", new Rectangle(0, 0, 10, 10));
+		this.addChild(this.display);
 	}
 	update() {
-		if (checkKey("a")) {
-			this.velocity[0] = -1;
+		switch (Keyboard.lastPressed("KeyA", "KeyD")) {
+			case "KeyA":
+				this.acceleration[0] = -this.speed;
+				break;
+			case "KeyD":
+				this.acceleration[0] = this.speed;
+				break;
+			case null:
+				this.acceleration[0] = 0;
+				break;
 		}
-		if (checkKey("d")) {
-			this.velocity[0] = 1;
+		if (this.canJump && Keyboard.isKeyDown("Space")) {
+			//this.canJump = false;
+			this.jumpIsAscending = true;
+			this.acceleration[1] = -this.jumpHeight;
 		}
 	}
 }

@@ -37,7 +37,7 @@ export class Entity extends Container {
 }
 export class DynamicEntity extends Entity {
 	velocity = [0, 0];
-
+	acceleration = [0, 0];
 	constructor(spriteOptions, name) {
 		super(spriteOptions, name);
 	}

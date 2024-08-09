@@ -27,3 +27,4 @@ const levels = [
 ];
 const levelManager = new LevelManager(levels);
 app.stage.addChild(levelManager);
+console.log(app.stage.children[0].children[0].children[0])
