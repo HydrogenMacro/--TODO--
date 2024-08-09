@@ -1,6 +1,7 @@
 import { Application, Sprite, Assets } from "/deps/pixi.mjs";
 import "/console.js";
 import "/assets.js";
+import "/entity.js"
 const app = new Application();
 await app.init({
 	canvas: document.getElementById("game"),
