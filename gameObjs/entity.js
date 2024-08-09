@@ -9,7 +9,7 @@ export class Entity extends Container {
 	constructor(name, hitbox) {
 		super();
 		this.entityName = name;
-		this.hitbox = hitbox
+		this.hitbox = hitbox;
 	}
 	/**
 	 *
@@ -27,9 +27,11 @@ export class Entity extends Container {
 			entity.hitbox.height
 		);
 	}
+	update() {
+
+	}
 }
 export class DynamicEntity extends Entity {
-	acceleration = [0, 0];
 	velocity = [0, 0];
 
 	constructor(spriteOptions, name) {

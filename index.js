@@ -1,19 +1,24 @@
 import { Application, Sprite, Assets } from "/deps/pixi.mjs";
 import "/console.js";
 import "/assets.js";
-import "/entity.js"
+import LevelManager from "./levels/levelManager.js";
+
 const app = new Application();
 await app.init({
 	canvas: document.getElementById("game"),
 	resizeTo: document.body,
 	antialias: true,
 	resolution: devicePixelRatio,
-	autoDensity: true
+	autoDensity: true,
 });
 
-await Assets.load("/assets/favicon.png")
-let s = Sprite.from("/assets/favicon.png");
-app.stage.addChild(s);
-app.ticker.add(() => {
-	s.position.x += 1;
+await new Promise(res => {
+	const cb = () => {
+		res();
+		document.body.removeEventListener("click", cb)
+	};
+	document.body.addEventListener("click", cb);
 });
+
+const levelManager = new LevelManager();
+app.stage.addChild(levelManager);
