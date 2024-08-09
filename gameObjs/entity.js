@@ -1,6 +1,7 @@
 import { Container, Rectangle } from "/deps/pixi.mjs";
 
 export class Entity extends Container {
+	display = null;
 	/**
 	 * 
 	 * @param {String} name 
@@ -26,6 +27,9 @@ export class Entity extends Container {
 			entity.hitbox.width,
 			entity.hitbox.height
 		);
+	}
+	updateDisplay() {
+		this.display.position.set(this.hitbox.x, this.hitbox.y);
 	}
 	update() {
 
