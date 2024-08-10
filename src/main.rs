@@ -1,15 +1,23 @@
+#[macro_use]
+extern crate hecs;
+
 mod levels;
 mod game_objs;
+mod assets;
 
 use hecs::*;
 use macroquad::prelude::*;
 use rapier2d::prelude::*;
 use crate::levels::{Level, LEVELS};
 use macroquad::experimental::collections::storage;
+use crate::assets::{Assets, load_assets};
 
 #[macroquad::main("BasicShapes")]
 async fn main() {
 	set_pc_assets_folder("assets");
+	storage::store(Assets::default());
+	load_assets().await;
+
 	let mut world = World::new();
 
 	storage::store(RigidBodySet::new());
