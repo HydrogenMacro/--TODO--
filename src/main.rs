@@ -1,15 +1,20 @@
 mod levels;
-mod entities;
+mod game_objs;
 
 use hecs::*;
 use macroquad::prelude::*;
+use rapier2d::prelude::*;
 use crate::levels::{Level, LEVELS};
-
+use macroquad::experimental::collections::storage;
 
 #[macroquad::main("BasicShapes")]
 async fn main() {
 	set_pc_assets_folder("assets");
 	let mut world = World::new();
+
+	storage::store(RigidBodySet::new());
+	storage::store(ColliderSet::new());
+
 	let mut current_level_index = 0;
 	let mut should_change_level = false;
 	LEVELS[current_level_index].init(&mut world);
