@@ -1,15 +1,14 @@
-import { DynamicEntity } from "./entity.js";
+import { Entity } from "./entity.js";
 import { Sprite, Assets, Rectangle } from "/deps/pixi.mjs";
 import Keyboard from "../keyboard.js";
 const playerTexture = await Assets.load("player");
-export default class Player extends DynamicEntity {
+export default class Player extends Entity {
 	display = new Sprite(playerTexture);
 	canJump = true;
-	jumpIsAscending = false;
-	jumpHeight = 10;
-	speed = 3;
+	jumpHeight = 20;
+	speed = 2;
 	constructor() {
-		super("player", new Rectangle(0, 0, 10, 10));
+		super("player");
 		this.addChild(this.display);
 	}
 	update() {
@@ -25,7 +24,7 @@ export default class Player extends DynamicEntity {
 				break;
 		}
 		if (this.canJump && Keyboard.isKeyDown("Space")) {
-			//this.canJump = false;
+			this.canJump = false;
 			this.jumpIsAscending = true;
 			this.acceleration[1] = -this.jumpHeight;
 		}

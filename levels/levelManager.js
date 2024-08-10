@@ -10,15 +10,24 @@ export class Level extends Container {
 	}
 	update() {
 		for (const child of this.children) {
-			child.update();
-			child.x += child.velocity[0];
-			child.y += child.velocity[1];
-			child.velocity[0] = child.acceleration[0];
-			child.velocity[1] = child.acceleration[1];
-			child.acceleration[1] = (5 - child.acceleration[1]) * .8;// gravity
-			child.velocity[0] *= 0.99; // friction
-			child.velocity[1] *= 0.99;
-			child.updateDisplay();
+			child._update();
+		}
+	}
+	normalizeObjects() {
+		for (const child of this.children) {
+			if (!child.isEntity) return;
+			child.x += this.velocity[0];
+			child.y += this.velocity[1];
+			child.velocity[0] += this.acceleration[0] + this.gravity[0];
+			child.velocity[1] += this.acceleration[1] + this.gravity[1];
+			child.acceleration[0] /= 2;
+			child.acceleration[1] /= 2;
+			child.velocity[0] *= 0.7;
+			child.velocity[1] *= 0.7;
+			for (const child2 of this.children) {
+				if (child === child2) continue;
+				
+			}
 		}
 	}
 	_setup() {

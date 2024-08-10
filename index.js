@@ -1,8 +1,10 @@
 import { Application, Sprite, Assets } from "/deps/pixi.mjs";
+import { debugRender} from "/physics.js"
 import "/console.js";
 import "/assets.js";
 import { LevelManager } from "./levels/levelManager.js";
 import level1 from "./levels/level1.js";
+
 
 const app = new Application();
 await app.init({
@@ -12,7 +14,6 @@ await app.init({
 	resolution: devicePixelRatio,
 	autoDensity: true,
 });
-
 await new Promise(res => {
 	console.log("press2play")
 	const cb = () => {
@@ -27,4 +28,5 @@ const levels = [
 ];
 const levelManager = new LevelManager(levels);
 app.stage.addChild(levelManager);
-console.log(app.stage.children[0].children[0].children[0])
+
+app.stage.addChild(debugRender);

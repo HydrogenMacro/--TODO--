@@ -1,65 +1,23 @@
+import { world } from "../physics.js";
 import { Container, Rectangle } from "/deps/pixi.mjs";
 
+console.log(RAPIER.RigidBodyDesc.dynamic(), RAPIER.ColliderDesc.cuboid(10, 10));
 export class Entity extends Container {
-	display = null;
-	/**
-	 * 
-	 * @param {String} name 
-	 * @param {Rectangle} hitbox 
-	 */
-	constructor(name, hitbox) {
-		super();
-		this.entityName = name;
-		this.hitbox = hitbox;
-	}
-	/**
-	 *
-	 * @param {Entity} entity
-	 */
-	getCollisionInfo(entity) {
-		return getCollisionInfo(
-			this.hitbox.x,
-			this.hitbox.y,
-			this.hitbox.width,
-			this.hitbox.height,
-			entity.hitbox.x,
-			entity.hitbox.y,
-			entity.hitbox.width,
-			entity.hitbox.height
-		);
-	}
-	updateDisplay() {
-		this.display.position.set(this.hitbox.x, this.hitbox.y);
-	}
-	update() {
-
-	}
-}
-export class DynamicEntity extends Entity {
 	velocity = [0, 0];
 	acceleration = [0, 0];
-	constructor(spriteOptions, name) {
-		super(spriteOptions, name);
+	gravity = [0, 1];
+	isEntity = true;
+	collider = world.createCollider(
+		RAPIER.ColliderDesc.cuboid(10, 10),
+		RAPIER.RigidBodyDesc.dynamic(),
+	);
+	constructor() {
+		super();
+	}
+	_update() {
+		this.update();
+		this.updateDisplay();
 	}
 }
 
-// returns the deltas (both x and y) needed to resolve collision
-function getCollisionInfo(x1, y1, w1, h1, x2, y2, w2, h2) {
-	let collisionInfo = [0, 0];
-	if ((x1 > x2 + w2 || x2 > x1 + w1) && (y1 > y2 + y2 || y2 > y1 + y1))
-		return collisionInfo;
-	// distance needed to travel in order to resolve collision
-	let leftDist = x2 - (x1 + w1);
-	let rightDist = x2 + w2 - x1;
-	let upDist = y2 - (y1 + h1);
-	let downDist = y2 + h2 - y1;
-	console.log("left", leftDist);
-	console.log("right", rightDist);
 
-	collisionInfo[0] = closestToZero(leftDist, rightDist);
-	collisionInfo[1] = closestToZero(upDist, downDist);
-	return collisionInfo;
-}
-function closestToZero(a, b) {
-	return Math.abs(a) < Math.abs(b) ? a : b;
-}
