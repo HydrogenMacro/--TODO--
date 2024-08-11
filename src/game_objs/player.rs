@@ -1,10 +1,11 @@
 use std::sync::LazyLock;
+
 use hecs::*;
-use macroquad::prelude::*;
-use rapier2d::prelude::*;
 use macroquad::experimental::collections::storage;
+use macroquad::prelude::*;
 use macroquad::prelude::animation::{AnimatedSprite, Animation};
-use rapier2d::control::KinematicCharacterController;
+use macroquad_platformer::Actor;
+
 use crate::assets::Assets;
 use crate::game_objs::Texture;
 
@@ -15,25 +16,15 @@ pub struct Player;
 pub struct PlayerBundle {
 	player_marker: Player,
 	texture: Texture2D,
-	rigid_body_handle: RigidBodyHandle,
-	collider_handle: ColliderHandle,
-	kinematic_character_controller: KinematicCharacterController
+	actor: Actor
 }
-impl Default for PlayerBundle {
-	fn default() -> Self {
-		let mut rigid_body_set = storage::get_mut::<RigidBodySet>();
-		let mut collider_set = storage::get_mut::<ColliderSet>();
-		let rigid_body_handle = rigid_body_set.insert(RigidBodyBuilder::dynamic());
+
+impl PlayerBundle {
+	pub(crate) fn new(physics_world: &mut macroquad_platformer::World) -> Self {
 		PlayerBundle {
 			player_marker: Player,
 			texture: storage::get::<Assets>().0.get(&"favicon.png").unwrap().clone(),
-			rigid_body_handle,
-			collider_handle: collider_set.insert_with_parent(
-				ColliderBuilder::cuboid(10., 10.).mass(10.),
-				rigid_body_handle,
-				&mut rigid_body_set
-			),
-			kinematic_character_controller: KinematicCharacterController::default()
+			actor: physics_world.add_actor(Vec2::new(0., 0.), 10, 10)
 		}
 	}
 }

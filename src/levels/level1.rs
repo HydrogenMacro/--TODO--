@@ -1,29 +1,27 @@
 use hecs::*;
 use macroquad::experimental::collections::storage;
 use macroquad::prelude::*;
-use rapier2d::prelude::*;
+use macroquad_platformer::Actor;
 
 use crate::game_objs::player::PlayerBundle;
-use crate::levels::Level;
+use crate::levels::{InLevel, Level};
 
-#[derive(Debug)]
-pub struct Level1;
-
+pub struct Level1(pub macroquad_platformer::World);
 impl Level for Level1 {
-	fn init(&self, world: &mut World) {
+	fn init(&mut self, world: &mut World) {
 		let player = world.spawn(
-			PlayerBundle::default()
+			PlayerBundle::new(&mut self.0)
 		);
-		world.insert(player, (Level1, )).unwrap();
+		world.insert_one(player, InLevel::<0>).unwrap();
+		dbg!(world.query::<&Level1>().iter().next().is_some());
 	}
 
-	fn update(&self, world: &mut World, change_level: &mut bool) {
-		let mut q = world.query::<With<(&Texture2D, &ColliderHandle), &Level1>>();
-		let (texture, collider_handle) = q.iter().next().unwrap().1;
-		let binding = storage::get::<ColliderSet>();
-		let pos = binding.get(*collider_handle).unwrap().translation();
-		draw_texture(texture, pos.x, pos.y, WHITE);
+	fn update(&mut self, world: &mut World, change_level: &mut bool) {
+		let mut q = world.query::<With<(&Texture2D, &Actor), &InLevel<0>>>();
+		let (texture, actor) = q.iter().next().unwrap().1;
+		let player_pos = self.0.actor_pos(*actor);
+		draw_texture(texture, player_pos.x, player_pos.y, WHITE);
 	}
 
-	fn cleanup(&self, world: &mut World) {}
+	fn cleanup(&mut self, world: &mut World) {}
 }
