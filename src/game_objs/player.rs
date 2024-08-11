@@ -19,11 +19,18 @@ pub struct PlayerBundle {
 }
 impl Default for PlayerBundle {
 	fn default() -> Self {
+		let mut rigid_body_set = storage::get_mut::<RigidBodySet>();
+		let mut collider_set = storage::get_mut::<ColliderSet>();
+		let rigid_body_handle = rigid_body_set.insert(RigidBodyBuilder::kinematic_position_based());
 		PlayerBundle {
 			player_marker: Player,
 			texture: storage::get::<Assets>().0.get(&"favicon.png").unwrap().clone(),
-			rigid_body_handle: Default::default(),
-			collider_handle: Default::default(),
+			rigid_body_handle,
+			collider_handle: collider_set.insert_with_parent(
+				ColliderBuilder::cuboid(10., 10.),
+				rigid_body_handle,
+				&mut rigid_body_set
+			),
 		}
 	}
 }

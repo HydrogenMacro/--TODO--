@@ -8,11 +8,13 @@ pub struct Level1;
 
 impl Level for Level1 {
 	fn init(&self, world: &mut World) {
-		world.spawn(PlayerBundle::default());
+		world.spawn(
+			(PlayerBundle::default(), Level1)
+		);
 	}
 
 	fn update(&self, world: &mut World, change_level: &mut bool) {
-		let mut q =  world.query::<&Texture2D>();
+		let mut q =  world.query::<With<&Texture2D, &Level1>>();
 		let texture = q.iter().next().unwrap().1;
 		draw_texture(texture, 0., 0., WHITE);
 	}
